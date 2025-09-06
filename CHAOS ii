@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chaos II</title>
+  <style>
+    body {
+      background-color: black;
+      color: #39FF14; /* neon green */
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 100px;
+    }
+    h1 {
+      font-size: 3em;
+      text-shadow: 0 0 20px #39FF14, 0 0 40px #00FFFF;
+    }
+    p {
+      font-size: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔥 Welcome to Chaos II 🔥</h1>
+  <p>I Am Just A Messenger. Refute Me For Your Entropy.</p>
+  <p>Stay tuned — more coming soon...</p>
+</body>
+</html>
