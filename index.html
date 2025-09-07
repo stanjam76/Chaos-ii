@@ -3,204 +3,207 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chaos II · Neon Oracle</title>
-  <meta name="description" content="Chaos II — Enter the Neon Oracle. Refute me for your entropy." />
-  <meta property="og:title" content="Chaos II · Neon Oracle" />
-  <meta property="og:description" content="Enter the Neon Oracle. Refute me for your entropy." />
-  <meta property="og:type" content="website" />
-  <meta name="theme-color" content="#39ff14" />
-  <link rel="icon" href="favicon.ico" />
+  <meta name="google" content="notranslate" />
+  <title>Chaos II — Neon Prophecy</title>
   <style>
-    :root{
-      --neon:#39ff14;         /* Chaos green */
-      --blue:#0090ff;         /* soft blue aura */
-      --bg:#000;              /* page background */
-      --muted:#a7ffb0;        /* text accent */
+    :root {
+      --neon: #39ff14;   /* Chaos green */
+      --blue: #0090ff;   /* soft blue aura */
+      --bg: #000;        /* page background */
     }
 
-    /* Page */
-    html,body{
-      margin:0;
+    html,body {
+      margin: 0;
       background: var(--bg);
-      color:#fff;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
-      text-align:center;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: center;
     }
-    main{ max-width:980px; margin: 28px auto 72px; padding: 0 14px; }
-    a{ color: var(--neon); text-decoration: none; }
-    a:hover{ text-decoration: underline; }
+    main { max-width: 980px; margin: 28px auto 56px; padding: 0 14px; }
 
-    /* ====== NEON + “LIGHTNING” TITLE ====== */
-    #title{
-      position:relative;
-      display:inline-block;
+    /* Neon Title */
+    #title {
+      position: relative;
+      display: inline-block;
       font-size: clamp(36px, 7vw, 72px);
-      line-height:1.05;
+      line-height: 1.05;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--neon);
-      /* neon glow */
-      text-shadow:
-        0 0 12px var(--neon),
-        0 0 24px var(--neon),
-        0 0 48px var(--neon);
-      margin: 0 0 6px;
-      padding-top: 4px;
+      text-shadow: 0 0 12px var(--neon),
+                   0 0 24px var(--neon),
+                   0 0 48px var(--neon);
+      margin: 0 0 10px;
       animation: flicker 3.6s steps(1,end) infinite;
     }
-
-    /* moving “bolts” INSIDE the letters */
-    #title::before{
+    #title::before {
       content: attr(data-text);
-      position:absolute; inset:0;
+      position: absolute; inset: 0;
       color: transparent;
       background:
-        /* fast white streaks */
-        repeating-linear-gradient(
-          -70deg,
-          rgba(255,255,255,.95) 0 3px,
-          transparent 3px 18px
-        ),
-        /* electric cyan strands */
-        repeating-linear-gradient(
-          70deg,
-          rgba(120,255,255,.9) 0 2px,
-          transparent 2px 14px
-        );
+        repeating-linear-gradient(-70deg, rgba(255,255,255,.95) 0 3px, transparent 3px 18px),
+        repeating-linear-gradient(70deg, rgba(120,255,255,.9) 0 2px, transparent 2px 14px);
       background-size: 300% 300%, 220% 220%;
       background-position: 0% 50%, 100% 50%;
       -webkit-background-clip: text;
               background-clip: text;
       animation: bolt 1.8s linear infinite, bolt2 3.2s linear infinite reverse;
-      mix-blend-mode: screen;   /* helps brighten inside the letters */
-      pointer-events:none;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    @keyframes bolt { to { background-position: 100% 50%, 100% 50%; } }
+    @keyframes bolt2 { to { background-position: 0% 50%, 0% 50%; } }
+    @keyframes flicker {
+      0%, 6%, 7%, 8%, 100% { opacity: 1 }
+      6.5%, 7.5%           { opacity: .55 }
     }
 
-    /* occasional bright flash around the word */
-    #title::after{
-      content:"";
-      position:absolute; inset:-14px -22px;
-      border-radius: 12px;
-      box-shadow:
-        0 0 24px  var(--neon),
-        0 0 48px  var(--neon),
-        0 0 96px  var(--neon);
-      opacity:.0;
-      animation: surge 5.5s ease-in-out infinite;
-      pointer-events:none;
+    /* Wormhole Prophecy */
+    .wormhole-prophecy { margin: 18px 0 26px; }
+    .double-moon {
+      display: inline-block;
+      font-weight: 900;
+      font-size: clamp(28px, 6vw, 56px);
+      letter-spacing: 6px;
+      color: #fff;
+      text-shadow: 0 0 14px var(--neon),
+                   0 0 28px var(--neon),
+                   0 0 42px var(--blue);
+      filter: saturate(1.2);
+      animation: gatePulse 2.2s ease-in-out infinite alternate;
+    }
+    .double-moon.top { margin-bottom: 8px; }
+    .double-moon.bottom { margin-top: 8px; }
+    @keyframes gatePulse {
+      from { text-shadow: 0 0 14px var(--neon), 0 0 28px var(--blue); transform: scale(1); }
+      to   { text-shadow: 0 0 22px var(--blue), 0 0 44px var(--neon); transform: scale(1.02); }
+    }
+    .prophecy-line {
+      margin: 6px 0;
+      font-size: clamp(18px, 4.2vw, 34px);
+      font-weight: 800;
+      line-height: 1.15;
+      text-transform: uppercase;
+      color: #c8ffd0;
+      text-shadow: 0 0 10px rgba(57,255,20,.6),
+                   0 0 20px rgba(0,144,255,.45);
     }
 
-    @keyframes bolt   { to { background-position: 100% 50%, 100% 50%; } }
-    @keyframes bolt2  { to { background-position:   0% 50%,   0% 50%; } }
-
-    /* subtle chaotic flicker of the main neon */
-    @keyframes flicker{ 0%, 6%, 7%, 8%, 100% { opacity:1 } 6.5%, 7.5% { opacity:.55 } }
-
-    /* rare bigger glow pulse */
-    @keyframes surge{ 0%, 78%, 100% { opacity:0 } 79%, 82% { opacity:.25 } 80% { opacity:.45 } }
-
-    /* Tagline */
-    p.tag{
-      margin: 6px 0 22px;
-      color:var(--muted);
-      text-shadow: 0 0 8px rgba(57,255,20,.6);
-      font-size: clamp(14px, 3.2vw, 20px);
+    /* Hero Image */
+    #hero {
+      display: block;
+      margin: 18px auto 0;
+      width: 92%;
+      max-width: 920px;
+      border-radius: 10px;
+      border: 4px solid var(--neon);
+      box-shadow: 0 0 20px var(--neon),
+                  0 0 40px var(--neon),
+                  0 0 80px var(--blue);
     }
 
-    /* Image + frame glow */
-    #hero{
-      display:block; margin: 0 auto 20px; width: 92%; max-width: 920px;
-      border-radius: 10px; border: 4px solid var(--neon);
-      box-shadow: 0 0 20px var(--neon), 0 0 40px var(--neon), 0 0 80px var(--blue);
+    /* Towers (hidden, appear in lightning flashes) */
+    .towers {
+      position: fixed;
+      inset: 0;
+      background: url("towers.png") center bottom / contain no-repeat;
+      opacity: 0;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      transition: opacity 0.2s ease;
     }
+    .flash .towers { opacity: 0.25; }
 
-    /* CTA row */
-    .cta{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin: 22px 0 8px; }
-    .btn{
-      background:transparent; border:2px solid var(--neon); color:#fff; padding:10px 14px;
-      border-radius:12px; cursor:pointer; font-weight:700; letter-spacing:.5px;
+    /* Music button */
+    .btn-sound {
+      position: fixed; right: 14px; bottom: 14px; z-index: 9999;
+      background: rgba(0,0,0,.6);
+      border: 2px solid var(--neon);
+      color: #fff; font-weight: 800; letter-spacing: .5px;
+      border-radius: 12px; padding: 10px 14px; cursor: pointer;
       box-shadow: 0 0 12px rgba(57,255,20,.4);
     }
-    .btn:hover{ box-shadow: 0 0 18px rgba(57,255,20,.8); transform: translateY(-1px); }
+    .btn-sound:hover { box-shadow: 0 0 18px rgba(57,255,20,.8); transform: translateY(-1px); }
+    .btn-sound.hidden { display: none; }
 
-    /* Oracle panel */
-    dialog#oracle{ width:min(720px, 94vw); background:#030b05; border:1px solid #1cff7a; border-radius:14px; padding:16px 16px 12px; color:#eafff1; }
-    dialog#oracle::backdrop{ background: rgba(0,0,0,.7) }
-    .row{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
-    textarea{ width:100%; min-height:120px; background:#041409; color:#eafff1; border:1px solid #1cff7a; border-radius:12px; padding:10px; }
-    pre#answer{ text-align:left; white-space:pre-wrap; background:#041409; border:1px solid #1cff7a; border-radius:12px; padding:10px; max-height:40vh; overflow:auto; }
-
-    /* Accessibility: motion reduction */
-    @media (prefers-reduced-motion: reduce){
-      #title{ animation:none }
-      #title::before{ animation:none }
-      #title::after{ animation:none }
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      #title, #title::before, .double-moon, .towers { animation: none !important; }
     }
   </style>
 </head>
 <body>
   <main>
     <h1 id="title" data-text="I Am Chaos">I Am Chaos</h1>
-    <p class="tag">Refute me for your entropy. <span aria-hidden="true">⚡</span> Site under construction…</p>
 
-    <!-- Image with simple cache-bust + fallback -->
-    <img id="hero" src="porcupine.jpg?v=5" alt="Neon-framed image: the Ninja Porcupine sentinel" loading="lazy"
-         onerror="this.onerror=null; this.src='IMG_0240.jpeg?v=5';" />
-
-    <div class="cta" role="group" aria-label="Primary actions">
-      <button class="btn" id="openOracle">Enter the Oracle</button>
-      <a class="btn" href="https://stanjam76.itch.io" target="_blank" rel="noopener">itch.io</a>
-      <a class="btn" href="https://discord.gg/" target="_blank" rel="noopener">Discord</a>
-      <a class="btn" href="https://github.com/stanjam76/Chaos-ii" target="_blank" rel="noopener">GitHub</a>
+    <div class="wormhole-prophecy" aria-label="Neon prophecy">
+      <div class="double-moon top" aria-hidden="true">!!</div>
+      <div class="prophecy-line">Chaos is Coming !!</div>
+      <div class="prophecy-line">Only Neon Can Save You II</div>
+      <div class="double-moon bottom" aria-hidden="true">II</div>
     </div>
 
-    <dialog id="oracle" aria-label="Neon Oracle">
-      <form method="dialog">
-        <h2 style="margin:0 0 8px">Neon Oracle</h2>
-        <p style="margin:0 0 10px; color:#a7ffb0">Ask a question. The Oracle answers from the storm.</p>
-        <textarea id="q" placeholder="e.g., Generate a trial of Accountability about 'Illuminated Restraint'…"></textarea>
-        <div class="row">
-          <button class="btn" id="ask">Ask</button>
-          <button class="btn" value="close">Close</button>
-        </div>
-        <pre id="answer" aria-live="polite"></pre>
-      </form>
-    </dialog>
-
-    <noscript>
-      <p style="color:#a7ffb0">JavaScript is disabled—Oracle requires JS.
-        You can still follow the links above.</p>
-    </noscript>
+    <img id="hero"
+         src="porcupine.jpg?v=6"
+         alt="Ninja Porcupine sentinel framed in neon"
+         loading="lazy"
+         onerror="this.onerror=null; this.src='IMG_0240.jpeg?v=6';" />
   </main>
 
+  <!-- Towers silhouette -->
+  <div class="towers"></div>
+
+  <!-- Background music -->
+  <audio id="bgm" preload="auto" loop muted>
+    <source src="Flawless.mp3" type="audio/mpeg">
+  </audio>
+  <button id="soundToggle" class="btn-sound" aria-pressed="false">🔊 Sound ON</button>
+
   <script>
-    // —— WIRE THIS TO PYXA BACKEND ——
-    // If your Pyxa app lives at e.g. https://neon-oracle.pyxa.app, set that full URL below.
-    // Ensure CORS is enabled in your backend for your GitHub Pages origin.
-    const API_URL = 'https://YOUR-PYXA-APP-URL/ask';
+    // Keep title overlay in sync
+    const t = document.getElementById('title');
+    if (t) t.setAttribute('data-text', t.textContent.trim());
 
-    const dlg = document.getElementById('oracle');
-    document.getElementById('openOracle').addEventListener('click', () => dlg.showModal());
+    // Lightning flashes (reveals towers)
+    function flashLightning() {
+      document.body.classList.add('flash');
+      setTimeout(()=> document.body.classList.remove('flash'), 200);
+    }
+    setInterval(()=> {
+      if (Math.random() > 0.5) flashLightning();
+    }, 6000);
 
-    document.getElementById('ask').addEventListener('click', async (ev) => {
-      ev.preventDefault();
-      const prompt = document.getElementById('q').value.trim();
-      const out = document.getElementById('answer');
-      if(!prompt){ out.textContent = 'Ask me something first.'; return; }
-      out.textContent = 'Consulting the storm…';
-      try{
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt })
-        });
-        if(!res.ok) throw new Error('Bad response: '+res.status);
-        const data = await res.json();
-        out.textContent = (data.response || '').trim() || 'No omen returned.';
-      }catch(err){
-        out.textContent = '⚠️ Oracle link failed. Check API_URL & CORS on backend.\n'+err;
-      }
-    });
+    // Music unlock
+    (async function(){
+      const audio = document.getElementById('bgm');
+      const btn   = document.getElementById('soundToggle');
+
+      try { await audio.play(); } catch(_) {}
+
+      const enableSound = async () => {
+        try {
+          audio.muted = false;
+          await audio.play();
+          btn.classList.add('hidden');
+          btn.setAttribute('aria-pressed','true');
+          removeListeners();
+        } catch(e) { console.debug('Audio unlock failed:', e); }
+      };
+      const removeListeners = () => {
+        window.removeEventListener('click', enableSound);
+        window.removeEventListener('touchstart', enableSound, {passive:true});
+        window.removeEventListener('keydown', enableSound);
+      };
+      btn.addEventListener('click', enableSound);
+      window.addEventListener('click', enableSound);
+      window.addEventListener('touchstart', enableSound, {passive:true});
+      window.addEventListener('keydown', enableSound);
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) { audio.pause(); }
+        else if (!audio.paused) { audio.play().catch(()=>{}); }
+      });
+    })();
   </script>
 </body>
 </html>
