@@ -24,7 +24,17 @@
       width: 600px;
       max-width: 90%;
       border: 3px solid #39ff14;
-      box-shadow: 0 0 20px #39ff14;
+      box-shadow: 0 0 20px #39ff14;#hero {
+  box-shadow: 0 0 40px 20px rgba(0, 150, 255, 0.7),   /* blue aura glow */
+              0 0 60px 30px rgba(255, 0, 200, 0.6),  /* pink/purple pulse */
+              0 0 80px 40px rgba(0, 255, 100, 0.5);  /* green flicker */
+  border-radius: 10px; /* optional, softens edges */
+  transition: box-shadow 0.5s ease-in-out;
+}6ddd
+      #hero {
+  box-shadow: 0 0 40px 20px rgba(0, 150, 255, 0.7); /* blue aura glow */
+  border-radius: 10px; /* optional, softens edges */
+}b
     }
   </style>
 </head>
@@ -32,11 +42,11 @@
   <h1>I Am Chaos</h1>
   <p>Refute me for your entropy. Site under construction…</p>
 
-  <!-- Porcupine Image -->
-  <img id="hero"
-       src="porcupine.jpg?v=3"
-       alt="Ninja Porcupine"
-       onerror="this.onerror=null; this.src='IMG_0240.jpeg?v=3';">
+<!-- Porcupine Image -->
+<img id="hero" 
+     src="porcupine.jpg?v=3" 
+     alt="Ninja Porcupine" 
+     onerror="this.onerror=null; this.src='IMG_0240.jpeg?v=3';">      
 
 </body>
 </html>
