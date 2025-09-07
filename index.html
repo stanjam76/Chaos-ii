@@ -1,245 +1,87 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>I Am Chaos</title>
-<style>
-  :root{
-    --bg:#05060a;
-    --neon:#70f4ff;
-    --neon2:#7d5bff;
-    --pulse:#00ffd9;
-    --bolt:#eaffff;
-  }
-  html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-  /* Subtle starfield */
-  .sky, .sky:before, .sky:after{
-    position:fixed;inset:0;content:"";pointer-events:none;
-  }
-  .sky{
-    background:
-      radial-gradient(1000px 600px at 10% -10%, #0b1120 10%, transparent 60%),
-      radial-gradient(900px 700px at 110% 10%, #0b1224 10%, transparent 60%),
-      radial-gradient(700px 500px at 50% 120%, #091018 10%, transparent 60%);
-  }
-  .sky:before{
-    background:
-      radial-gradient(1px 1px at 10% 20%, #5df 90%, transparent 92%),
-      radial-gradient(1px 1px at 30% 60%, #9af 90%, transparent 92%),
-      radial-gradient(1px 1px at 70% 30%, #7bf 90%, transparent 92%),
-      radial-gradient(1px 1px at 80% 80%, #adf 90%, transparent 92%);
-    opacity:.35; animation: twinkle 7s linear infinite;
-  }
-  .sky:after{
-    background:
-      radial-gradient(1px 1px at 20% 40%, #9ef 90%, transparent 92%),
-      radial-gradient(1px 1px at 60% 70%, #8cf 90%, transparent 92%),
-      radial-gradient(1px 1px at 85% 50%, #aff 90%, transparent 92%),
-      radial-gradient(1px 1px at 45% 15%, #7ef 90%, transparent 92%);
-    opacity:.25; animation: twinkle 9s linear infinite reverse;
-  }
-  @keyframes twinkle { 
-    0%,100%{opacity:.15} 50%{opacity:.45}
-  }
-
-  /* Layout */
-  .stage{position:fixed;inset:0;display:grid;place-items:center}
-  .wrap{position:relative;width:min(90vw,900px);aspect-ratio:1/1;display:grid;place-items:center}
-
-  /* Aurora halo behind porcupine */
-  .aura{
-    position:absolute;inset:-15%;
-    background:
-      radial-gradient(closest-side, rgba(125,91,255,.35), transparent 60%),
-      conic-gradient(from 0deg, rgba(0,255,217,.12), rgba(112,244,255,.12) 30%, rgba(125,91,255,.10) 60%, rgba(0,255,217,.12) 100%);
-    filter: blur(40px) saturate(130%);
-    animation: breathe 6.5s ease-in-out infinite;
-    border-radius:50%;
-  }
-  @keyframes breathe{
-    0%,100%{transform:scale(0.98) rotate(0.3deg);opacity:.8}
-    50%{transform:scale(1.04) rotate(-0.3deg);opacity:1}
-  }
-
-  /* Porcupine image with neon rim + quill pulse shader */
-  .porc{
-    position:relative; z-index:3;
-    width:80%; max-width:720px; aspect-ratio:1/1;
-    display:block;
-    filter: drop-shadow(0 0 12px rgba(125,91,255,.45)) drop-shadow(0 0 28px rgba(0,255,217,.25));
-  }
-  .porc img{width:100%; height:100%; object-fit:contain; display:block; filter:contrast(1.05) saturate(1.1)}
-  /* Quill pulse overlay (animated gradient clipped to image alpha via mix-blend) */
-  .quill-pulse{
-    position:absolute; inset:0; z-index:4; pointer-events:none;
-    background:
-      repeating-conic-gradient(from 0deg, rgba(0,255,217,.0) 0 12deg, rgba(0,255,217,.18) 12deg 14deg, rgba(112,244,255,.0) 14deg 26deg),
-      radial-gradient(200px 120px at 60% 35%, rgba(112,244,255,.22), transparent 60%),
-      radial-gradient(220px 160px at 40% 50%, rgba(125,91,255,.18), transparent 70%),
-      radial-gradient(260px 180px at 55% 60%, rgba(0,255,217,.20), transparent 75%);
-    mix-blend-mode: screen;
-    filter: blur(1px);
-    opacity:.9;
-    -webkit-mask-image: url('porcupine.png');
-    mask-image: url('porcupine.png');
-    -webkit-mask-size: contain; mask-size: contain;
-    -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
-    -webkit-mask-position:center; mask-position:center;
-    animation: quills 2.4s cubic-bezier(.4,0,.2,1) infinite;
-  }
-  @keyframes quills {
-    0%{transform:scale(1) rotate(0deg); opacity:.7}
-    30%{transform:scale(1.01) rotate(0.2deg); opacity:1}
-    60%{transform:scale(1) rotate(-0.15deg); opacity:.85}
-    100%{transform:scale(1) rotate(0deg); opacity:.7}
-  }
-
-  /* Foreground/Background lightning canvas layers */
-  canvas.bolts{position:absolute; inset: -5%; width:110%; height:110%; pointer-events:none;}
-  .bolts.back{z-index:2; filter: blur(2px) drop-shadow(0 0 10px rgba(112,244,255,.45)); opacity:.7}
-  .bolts.front{z-index:5; filter: drop-shadow(0 0 8px rgba(234,255,255,.9)); opacity:.95}
-
-  /* Title */
-  .title{
-    position:fixed; left:50%; bottom:4vh; transform:translateX(-50%);
-    font-weight:800; letter-spacing:.05em;
-    color:#bff; text-shadow:
-      0 0 12px rgba(127,255,255,.55),
-      0 0 32px rgba(125,91,255,.45);
-    font-size: clamp(24px, 4.6vw, 46px);
-    animation: glow 3.5s ease-in-out infinite;
-    mix-blend-mode:screen;
-  }
-  @keyframes glow { 0%,100%{filter:hue-rotate(0deg)} 50%{filter:hue-rotate(35deg)} }
-
-  /* Little screen glitch */
-  .scan{
-    position:fixed; inset:0; pointer-events:none; mix-blend-mode:screen; opacity:.08;
-    background:
-      repeating-linear-gradient(180deg, #8ff2, #8ff2 1px, transparent 1px, transparent 3px);
-    animation: scan 5s linear infinite;
-  }
-  @keyframes scan{0%{transform:translateY(-10%)}100%{transform:translateY(10%)}}
-
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chaos II</title>
+  <style>
+    :root{
+      --bg:#0a0e14;
+      --fg:#e6f1ff;
+      --neon:#58a6ff;
+      --spark:#a5d6ff;
+      --accent:#6ee7ff;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background:radial-gradient(1200px 700px at 70% 10%, #121826 0%, #0a0e14 60%, #05070a 100%);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;}
+    .wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;gap:18px;padding:28px}
+    h1{margin:4px 0 0;font-size:clamp(28px,5vw,44px);letter-spacing:1.2px}
+    .tag{opacity:.8}
+    .porcupine{position:relative;width:min(800px,92vw);filter:drop-shadow(0 12px 30px rgba(0,0,0,.6))}
+    .porcupine img{width:100%;height:auto;display:block;border-radius:12px}
+    .porcupine::after{
+      content:"";position:absolute;inset:-2.5% -3%;
+      border-radius:14px;pointer-events:none;
+      box-shadow:0 0 22px 6px color-mix(in oklab, var(--neon) 70%, transparent),
+                 0 0 60px 12px color-mix(in oklab, var(--accent) 50%, transparent);
+      animation:auraPulse 3.6s ease-in-out infinite alternate;
+      filter:hue-rotate(10deg) saturate(140%) blur(1px);
+      opacity:.65;
+    }
+    @keyframes auraPulse{
+      0%{opacity:.42;filter:hue-rotate(0deg) saturate(130%) blur(1px)}
+      50%{opacity:.78;filter:hue-rotate(35deg) saturate(165%) blur(1.4px)}
+      100%{opacity:.55;filter:hue-rotate(10deg) saturate(140%) blur(1px)}
+    }
+    .bolts{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen}
+    .bolt{stroke:var(--spark);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none;
+      filter:drop-shadow(0 0 8px rgba(166,214,255,.9)) drop-shadow(0 0 18px rgba(94,166,255,.6));
+      opacity:0;}
+    @keyframes flash{0%{opacity:0;}8%{opacity:1;}12%{opacity:.3;}15%{opacity:1;}25%{opacity:0;}100%{opacity:0;}}
+    .note{opacity:.8;font-size:14px}
+    .small{opacity:.7;font-size:13px}
+    a{color:var(--accent);text-decoration:none;border-bottom:1px dashed color-mix(in oklab, var(--accent) 60%, transparent)}
+    a:hover{opacity:.85}
+  </style>
 </head>
 <body>
-  <div class="sky"></div>
-  <div class="stage">
-    <div class="wrap">
-      <div class="aura"></div>
+  <div class="wrap">
+    <h1>I Am Chaos</h1>
+    <div class="tag">Refute me for your entropy.</div>
 
-      <!-- BACK lightning -->
-      <canvas class="bolts back" id="boltsBack"></canvas>
-
-      <!-- Porcupine -->
-      <figure class="porc">
-        <img src="porcupine.png?v=2" alt="Neon Porcupine">
-        <div class="quill-pulse"></div>
-      </figure>
-
-      <!-- FRONT lightning -->
-      <canvas class="bolts front" id="boltsFront"></canvas>
+    <div class="porcupine" id="porcupine">
+      <!-- Use your actual file name here -->
+      <img src="JPEG_00240.jpeg" alt="Chaos II — Neon Porcupine">
+      <svg class="bolts" viewBox="0 0 1000 650" preserveAspectRatio="xMidYMid slice">
+        <path class="bolt" id="b1" d="M220 260 L260 220 L290 260 L330 210" />
+        <path class="bolt" id="b2" d="M360 180 L395 150 L420 190 L450 165" />
+        <path class="bolt" id="b3" d="M520 220 L550 190 L580 230 L610 200" />
+        <path class="bolt" id="b4" d="M680 260 L710 220 L745 260 L780 235" />
+        <path class="bolt" id="b5" d="M420 310 L450 275 L490 305 L520 270" />
+        <path class="bolt" id="b6" d="M300 350 L330 320 L360 355 L390 330" />
+        <path class="bolt" id="b7" d="M600 340 L630 305 L660 345 L690 320" />
+      </svg>
     </div>
+
+    <div class="note">Site under construction… neon quills online.</div>
+    <div class="small">v0.1 • <a href="./">refresh</a></div>
   </div>
 
-  <div class="title">I&nbsp;Am&nbsp;Chaos</div>
-  <div class="scan"></div>
-
-  <!-- Lightning drawer -->
   <script>
-  // Resize helper
-  function fitCanvas(c){
-    const r = c.getBoundingClientRect();
-    c.width = Math.floor(r.width * devicePixelRatio);
-    c.height = Math.floor(r.height * devicePixelRatio);
-  }
-
-  function rand(a,b){ return Math.random()*(b-a)+a }
-  function line(ctx,x1,y1,x2,y2,w,col,alpha){
-    ctx.globalAlpha = alpha;
-    ctx.strokeStyle = col;
-    ctx.lineWidth = w;
-    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
-  }
-
-  // Generate a jagged lightning segment
-  function bolt(ctx, ox, oy, len, ang, steps, spread, color, width, alpha){
-    let x=ox, y=oy, step=len/steps;
-    ctx.lineCap='round'; ctx.lineJoin='round';
-    ctx.shadowBlur = 20; ctx.shadowColor = color;
-
-    ctx.beginPath(); ctx.moveTo(x,y);
-    for(let i=0;i<steps;i++){
-      ang += rand(-spread, spread);
-      x += Math.cos(ang) * step + rand(-1,1)*2;
-      y += Math.sin(ang) * step + rand(-1,1)*2;
-      ctx.lineTo(x,y);
+    const bolts=Array.from(document.querySelectorAll('.bolt'));
+    function sparkOne(){
+      const b=bolts[Math.floor(Math.random()*bolts.length)];
+      const dur=400+Math.random()*600;
+      b.style.animation='none'; void b.offsetWidth;
+      b.style.animation=`flash ${dur}ms ease-in-out 1`;
     }
-    ctx.strokeStyle = color;
-    ctx.globalAlpha = alpha;
-    ctx.lineWidth = width;
-    ctx.stroke();
-
-    // outer glow stroke
-    ctx.shadowBlur = 35; ctx.globalAlpha = Math.max(alpha-0.25,0);
-    ctx.lineWidth = width*1.8; ctx.stroke();
-  }
-
-  function drawBolts(canvas, opts){
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    const W = canvas.width, H = canvas.height;
-    // Porcupine center-ish
-    const cx = W*0.5, cy = H*0.52;
-
-    // Create a ring of random bolt origins around the porcupine
-    const count = opts.count;
-    for(let i=0;i<count;i++){
-      const radius = rand(W*0.08, W*0.28);
-      const theta = rand(0, Math.PI*2);
-      const ox = cx + Math.cos(theta)*radius;
-      const oy = cy + Math.sin(theta)*radius;
-
-      const targetAngle = Math.atan2(cy-oy, cx-ox) + rand(-0.2,0.2);
-      const len = rand(W*0.10, W*0.22);
-      const steps = Math.floor(rand(9,14));
-      const spread = 0.22;
-      const alpha = rand(0.55, 0.95);
-      const width = rand(2, 4) * devicePixelRatio;
-      const color = i%2 ? 'rgba(234,255,255,1)' : 'rgba(112,244,255,1)';
-
-      bolt(ctx, ox, oy, len, targetAngle, steps, spread, color, width, alpha);
-
-      // small side tendrils
-      if(Math.random() < 0.55){
-        const tlen = len*rand(0.35,0.6);
-        const tang = targetAngle + rand(-0.9,0.9);
-        bolt(ctx, ox, oy, tlen, tang, Math.floor(steps*0.6), spread*1.2, color, width*0.8, alpha*0.8);
-      }
-    }
-  }
-
-  const back = document.getElementById('boltsBack');
-  const front = document.getElementById('boltsFront');
-  function resizeAll(){ fitCanvas(back); fitCanvas(front); }
-  resizeAll(); addEventListener('resize', resizeAll);
-
-  // Animate: occasionally redraw both layers with different density
-  function cycle(){
-    drawBolts(back,  {count: 12});
-    drawBolts(front, {count: 6});
-  }
-  cycle();
-  setInterval(cycle, 1200 + Math.random()*800);
-
-  // Little flicker on tempo to feel "glitchy"
-  setInterval(()=>{
-    document.body.style.filter = 'brightness(1.03)';
-    setTimeout(()=>document.body.style.filter='', 120);
-  }, 2000);
+    setInterval(()=>{const n=Math.floor(Math.random()*3);for(let i=0;i<n;i++)setTimeout(sparkOne,i*60)},480);
+    let hue=0;setInterval(()=>{
+      hue=(hue+2)%360;
+      document.documentElement.style.setProperty('--neon',`hsl(${200+(hue/8)},90%,65%)`);
+      document.documentElement.style.setProperty('--accent',`hsl(${190+(hue/10)},95%,72%)`);
+      document.documentElement.style.setProperty('--spark',`hsl(${200+(hue/12)},100%,85%)`);
+    },160);
   </script>
 </body>
 </html>
