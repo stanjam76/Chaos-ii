@@ -6,85 +6,113 @@
   <title>Chaos II</title>
 
   <style>
-    /* --- Base page styles --- */
+    /* --- Theme --- */
     :root{
-      --neon: #39ff14;            /* neon green */
-      --aura: rgba(0,150,255,.75);/* blue aura glow */
-      --text: #ffffff;            /* white text */
-      --bg:   #000000;            /* black background */
+      --neon: #39ff14;             /* neon green UI */
+      --aura: rgba(0,150,255,.75); /* blue aura glow */
+      --text: #ffffff;
+      --bg:   #000000;
+      --pulse-a: rgba(0,150,255,.65);  /* blue */
+      --pulse-b: rgba(255,  0,200,.45);/* magenta */
+      --pulse-c: rgba(  0,255,100,.45);/* green */
+      --bolt:    rgba(120,200,255,.95);
     }
 
     html, body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      color: var(--text);
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--text);
       font-family: Arial, Helvetica, sans-serif;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
 
-    .wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 32px 16px 64px;
-      text-align: center;
-    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 16px 72px; text-align:center; }
 
-    h1 {
+    h1{
       margin: 0 0 8px;
       color: var(--neon);
-      font-size: clamp(28px, 6vw, 54px);
-      text-shadow:
-        0 0 10px var(--neon),
-        0 0 20px var(--neon),
-        0 0 30px var(--neon);
-      letter-spacing: .5px;
+      font-size: clamp(28px,6vw,54px);
+      text-shadow: 0 0 10px var(--neon), 0 0 20px var(--neon), 0 0 30px var(--neon);
+      letter-spacing:.5px;
     }
+    p.tag{ margin:0 0 24px; color:var(--neon); opacity:.9; font-size:clamp(12px,2.5vw,18px); }
 
-    p.tag {
-      margin: 0 0 24px;
-      color: var(--neon);
-      opacity: .9;
-      font-size: clamp(12px, 2.5vw, 18px);
-    }
+    /* --- Image with aura --- */
+    .hero-wrap{ position:relative; display:inline-block; }
+    img{ display:block; width:100%; height:auto; }
 
-    /* --- Image + effects --- */
-    img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-
-    #hero {
-      /* blue aura + soft edge */
-      border: 3px solid var(--neon);
-      border-radius: 10px;
+    #hero{
+      border:3px solid var(--neon);
+      border-radius:10px;
       box-shadow:
-        0 0 35px 15px var(--aura),   /* outer blue aura */
-        0 0 20px var(--neon);        /* inner neon echo */
+        0 0 35px 15px var(--aura),  /* outer blue aura */
+        0 0 20px var(--neon);       /* inner neon echo */
       transition: box-shadow .5s ease-in-out, transform .25s ease;
-      animation: pulse 3.2s infinite ease-in-out;
+      animation: auraPulse 3.2s infinite ease-in-out;
+    }
+    @media(hover:hover) and (pointer:fine){ #hero:hover{ transform:scale(1.01); } }
+
+    @keyframes auraPulse{
+      0%,100%{ box-shadow: 0 0 35px 15px var(--aura), 0 0 18px var(--neon); }
+      50%    { box-shadow: 0 0 55px 24px var(--aura), 0 0 28px var(--neon); }
     }
 
-    /* gentle hover pop on desktop */
-    @media (hover:hover) and (pointer:fine){
-      #hero:hover { transform: scale(1.01); }
+    /* --- Multicolor quill pulses hugging the image border --- */
+    .hero-wrap::before{
+      content:"";
+      position:absolute; inset:-6px;
+      border-radius:12px;
+      pointer-events:none;
+      box-shadow:
+        0 0 28px 10px var(--pulse-a),
+        0 0 22px  8px var(--pulse-b),
+        0 0 18px  6px var(--pulse-c);
+      animation: borderFlicker 2.8s infinite ease-in-out;
+    }
+    @keyframes borderFlicker{
+      0%  { opacity:.55; filter: saturate(1); }
+      35% { opacity:.85; filter: saturate(1.3); }
+      60% { opacity:.45; filter: saturate(1); }
+      100%{ opacity:.70; filter: saturate(1.2); }
     }
 
-    /* neon pulse */
-    @keyframes pulse {
-      0%, 100% {
-        box-shadow:
-          0 0 35px 15px var(--aura),
-          0 0 18px var(--neon);
-      }
-      50% {
-        box-shadow:
-          0 0 55px 24px var(--aura),
-          0 0 28px var(--neon);
-      }
+    /* --- Lightning “bolts” overlay (thin animated strokes) --- */
+    .bolt{
+      position:absolute; width:2px; height:80px; background:transparent;
+      left:50%; top:50%;
+      transform-origin:50% 0;
+      filter: blur(.3px);
+      pointer-events:none;
     }
+    .bolt::before{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(to bottom,
+                 rgba(255,255,255,0) 0%,
+                 var(--bolt) 25%,
+                 #fff 50%,
+                 var(--bolt) 75%,
+                 rgba(255,255,255,0) 100%);
+      box-shadow:
+        0 0 8px var(--bolt),
+        0 0 14px var(--bolt);
+      animation: boltFlash 1.4s infinite;
+    }
+    @keyframes boltFlash{
+      0%, 20%, 100% { opacity:.0; transform: scaleY(.6); }
+      10%           { opacity:.95; transform: scaleY(1) translateY(0); }
+      12%           { opacity:.4;  transform: scaleY(.8) translateY(4px); }
+      14%           { opacity:.9;  transform: scaleY(1) translateY(-2px); }
+      18%           { opacity:.2;  transform: scaleY(.7) translateY(6px); }
+    }
+
+    /* Individual bolt placements (roughly around quills) */
+    .b1{ transform: translate(-170px,-140px) rotate(-18deg); height:90px; animation-delay:.05s; }
+    .b2{ transform: translate( 190px,-120px) rotate( 15deg); height:80px;  animation-delay:.18s; }
+    .b3{ transform: translate(-220px, -20px) rotate(-8deg);  height:70px;  animation-delay:.33s; }
+    .b4{ transform: translate( 230px, -10px) rotate( 8deg);  height:82px;  animation-delay:.47s; }
+    .b5{ transform: translate(-80px, -180px) rotate(-28deg); height:95px;  animation-delay:.61s; }
+    .b6{ transform: translate(  60px, -185px) rotate( 22deg); height:88px;  animation-delay:.79s; }
   </style>
 </head>
 <body>
@@ -92,14 +120,20 @@
     <h1>I Am Chaos</h1>
     <p class="tag">Refute me for your entropy. Site under construction…</p>
 
-    <!-- PORCUPINE IMAGE
-         1) Primary:  porcupine.jpg?v=4
-         2) Fallback: IMG_0240.jpeg?v=4  (auto-swaps if #1 fails) -->
-    <img
-      id="hero"
-      src="porcupine.jpg?v=4"
-      alt="Ninja Porcupine"
-      onerror="this.onerror=null; this.src='IMG_0240.jpeg?v=4';" />
+    <!-- Image + effects -->
+    <div class="hero-wrap">
+      <img id="hero"
+           src="porcupine.jpg?v=5"
+           alt="Ninja Porcupine"
+           onerror="this.onerror=null; this.src='IMG_0240.jpeg?v=5';" />
+      <!-- lightning overlay -->
+      <div class="bolt b1"></div>
+      <div class="bolt b2"></div>
+      <div class="bolt b3"></div>
+      <div class="bolt b4"></div>
+      <div class="bolt b5"></div>
+      <div class="bolt b6"></div>
+    </div>
   </main>
 </body>
 </html>
