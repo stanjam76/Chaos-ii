@@ -78,8 +78,9 @@
 
   <!-- Background music player -->
   <audio id="bgm" preload="auto" loop muted playsinline>
-    <source src="ChaosBeat.mp3" type="audio/mpeg">
+    <source src="Chaos!!.wav" type="audio/wav">
   </audio>
+
   <button id="soundToggle" class="btn-sound" aria-pressed="false" aria-live="polite">
     🔊 Sound ON
   </button>
@@ -101,24 +102,24 @@
           await audio.play();
           unlocked = true;
           btn.classList.add('hidden');
-          btn.setAttribute('aria-pressed', 'true');
+          btn.setAttribute('aria-pressed','true');
           removeListeners();
-        } catch(e) {
-          console.debug('Audio unlock failed:', e);
-        }
+        } catch(e) { console.debug('Audio unlock failed:', e); }
       }
+
       function removeListeners() {
         ['click','touchstart','keydown'].forEach(ev =>
           window.removeEventListener(ev, enableSound, ev==='touchstart'?{passive:true}:undefined)
         );
         btn.removeEventListener('click', enableSound);
       }
+
       btn.addEventListener('click', enableSound);
       window.addEventListener('click', enableSound);
       window.addEventListener('touchstart', enableSound, {passive:true});
       window.addEventListener('keydown', enableSound);
 
-      document.addEventListener('visibilitychange', () => {
+      document.addEventListener('visibilitychange', ()=>{
         if (document.hidden) audio.pause();
         else if (unlocked) audio.play().catch(()=>{});
       });
