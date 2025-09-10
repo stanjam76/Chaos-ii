@@ -95,6 +95,24 @@
       window.addEventListener('keydown', enableSound);
       document.addEventListener('visibilitychange', ()=>{ if(document.hidden) audio.pause(); else if(unlocked) audio.play().catch(()=>{}); });
     })();
-  </script>
+  </script><script>
+  // Example porcupine animation
+  const porcupine = document.createElement("img");
+  porcupine.src = "porcupine.jpg";
+  porcupine.style.position = "absolute";
+  porcupine.style.left = "-200px";
+  porcupine.style.top = "50%";
+  porcupine.style.transform = "translateY(-50%)";
+  porcupine.style.transition = "left 3s linear";
+  document.body.appendChild(porcupine);
+
+  setTimeout(() => {
+    porcupine.style.left = "50%";
+  }, 500);
+
+  setTimeout(() => {
+    alert("⚡ Chaos is coming!");
+  }, 4000);
+</script>
 </body>
 </html>
