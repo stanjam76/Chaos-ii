@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Chaos II — Ninja Porcupine Test</title>
+<style>
+  html,body{height:100%;margin:0;background:#000;color:#fff;font-family:system-ui,Segoe UI,Roboto,Arial}
+  .stage{position:relative;display:grid;place-items:center;height:100%;overflow:hidden}
+  /* background pulse */
+  .bg{
+    position:absolute;inset:-20vmax;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(0,180,255,.15), transparent 40%),
+      radial-gradient(circle at 80% 20%, rgba(0,255,180,.08), transparent 35%),
+      radial-gradient(circle at 20% 80%, rgba(180,0,255,.08), transparent 35%),
+      #000;
+    animation:bgPulse 6s ease-in-out infinite;
+    filter:blur(8px);
+  }
+  @keyframes bgPulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.06)}
+  }
+
+  /* the porcupine image */
+  .ninja{
+    width:min(80vmin, 640px);
+    max-width:92%;
+    image-rendering:auto;
+    filter:drop-shadow(0 0 18px rgba(0,180,255,.65))
+           drop-shadow(0 0 4px rgba(0,180,255,.9));
+    transform:translateY(8vh) scale(.92) rotate(-1deg);
+    animation:ninjaBurst 1200ms cubic-bezier(.2,.8,.2,1) forwards,
+              neonBreath 3.8s ease-in-out 1.2s infinite;
+  }
+  @keyframes ninjaBurst{
+    0%   {opacity:0; transform:translateY(35vh) scale(.65) rotate(-9deg)}
+    60%  {opacity:1; transform:translateY(-2vh) scale(1.05) rotate(2deg)}
+    100% {opacity:1; transform:translateY(0) scale(1.0) rotate(0deg)}
+  }
+  @keyframes neonBreath{
+    0%,100%{filter:drop-shadow(0 0 12px rgba(0,180,255,.55)) drop-shadow(0 0 2px rgba(0,180,255,1))}
+    50%    {filter:drop-shadow(0 0 28px rgba(0,200,255,.95)) drop-shadow(0 0 6px rgba(0,200,255,1))}
+  }
+
+  /* simple “lightning” flickers hugging the image edges */
+  .arc{
+    position:absolute; inset:0; pointer-events:none; mix-blend-mode:screen;
+    background: conic-gradient(from 0deg, rgba(0,200,255,.0), rgba(0,200,255,.22), rgba(0,200,255,0));
+    -webkit-mask: radial-gradient(60% 60% at 50% 50%, black 56%, transparent 58%);
+            mask: radial-gradient(60% 60% at 50% 50%, black 56%, transparent 58%);
+    animation:arcSpin 2.4s linear infinite;
+    filter:blur(1.2px);
+  }
+  .arc.arc2{animation-duration:3.1s; opacity:.65; transform:scale(1.06) rotate(17deg)}
+  @keyframes arcSpin { to { transform:rotate(360deg) } }
+
+  /* footer actions */
+  .ui{
+    position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+    display:flex; gap:12px; flex-wrap:wrap; justify-content:center
+  }
+  .btn{
+    border:1px solid rgba(0,200,255,.5);
+    background:rgba(0,50,70,.35);
+    color:#bff3ff; padding:10px 14px; border-radius:10px; cursor:pointer;
+    text-decoration:none; font-weight:600; letter-spacing:.3px
+  }
+  .btn:hover{background:rgba(0,70,90,.55)}
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="bg"></div>
+    <img class="ninja" src="./porcupine.png" alt="Ninja Porcupine"/>
+    <div class="arc"></div>
+    <div class="arc arc2"></div>
+
+    <div class="ui">
+      <a class="btn" href="./">Back to Home</a>
+    </div>
+  </div>
+</body>
+</html>
