@@ -1,159 +1,172 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chaos II — Ninja Porcupine</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="google" content="notranslate" />
+  <title>Chaos II — Neon Prophecy</title>
   <style>
-    html,body { margin:0; height:100%; background:#050915; overflow:hidden; }
-    #ui { position:fixed; inset:auto 12px 12px auto; color:#8df; font:12px/1.2 system-ui; opacity:.75 }
-    a { color:#9ff; text-decoration:none; border-bottom:1px dashed #46c }
-    a:hover { opacity:1 }
+    :root { --neon:#39ff14; --blue:#0090ff; --bg:#000; }
+
+    html,body{ margin:0; height:100%; background:var(--bg); color:#fff;
+      font-family:Arial,Helvetica,sans-serif; text-align:center; }
+
+    /* Background canvas sits behind all content */
+    #bg { position:fixed; inset:0; z-index:-1; background:#000; }
+
+    main{ max-width:980px; margin:28px auto 64px; padding:0 14px; }
+
+    /* Title / Prophecy */
+    #title{
+      display:inline-block; margin:10px 0 8px;
+      font-size:clamp(36px,7vw,72px); letter-spacing:2px; text-transform:uppercase;
+      color:var(--neon);
+      text-shadow:0 0 12px var(--neon),0 0 24px var(--neon),0 0 48px var(--neon);
+      animation:flicker 3.6s steps(1,end) infinite;
+    }
+    @keyframes flicker{ 0%,6%,7%,8%,100%{opacity:1} 6.5%,7.5%{opacity:.55} }
+
+    .prophecy{
+      margin:6px 0; font-size:clamp(18px,4.2vw,34px); font-weight:800; text-transform:uppercase;
+      color:#c8ffd0;
+      text-shadow:0 0 10px rgba(57,255,20,.6),0 0 20px rgba(0,144,255,.45);
+    }
+
+    /* Image frame */
+    .hero-wrap{
+      display:block; margin:18px auto 0; width:92%; max-width:920px;
+      border-radius:10px; border:4px solid var(--neon);
+      box-shadow:0 0 20px var(--neon),0 0 40px var(--neon),0 0 80px var(--blue);
+      overflow:hidden;
+    }
+    #hero{ display:block; width:100%; height:auto; }
+
+    /* Sound button */
+    .btn-sound{
+      position:fixed; right:14px; bottom:14px; z-index:10;
+      background:rgba(0,0,0,.6); border:2px solid var(--neon);
+      color:#fff; font-weight:800; letter-spacing:.3px;
+      border-radius:12px; padding:10px 14px; cursor:pointer;
+      box-shadow:0 0 12px rgba(57,255,20,.4);
+    }
+    .btn-sound:hover{ box-shadow:0 0 18px rgba(57,255,20,.8); transform:translateY(-1px); }
+    .btn-sound.hidden{ display:none; }
+
+    /* Accessibility: reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      #title{ animation:none }
+    }
   </style>
 </head>
 <body>
-  <div id="ui">Tap/Click to make the porcupine dash →</div>
+  <!-- Soft neon Sierpinski background -->
+  <canvas id="bg" aria-hidden="true"></canvas>
 
-  <!-- Three.js from CDN -->
-  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-  <!-- Text helper (optional). If it fails to load, page still works. -->
-  <script src="https://unpkg.com/three@0.160.0/examples/jsm/loaders/FontLoader.min.js"></script>
-  <script src="https://unpkg.com/three@0.160.0/examples/jsm/geometries/TextGeometry.min.js"></script>
+  <main>
+    <h1 id="title">I Am Chaos</h1>
+    <div class="prophecy">Chaos is Coming !!</div>
+    <div class="prophecy">Only Neon Can Save You II</div>
+
+    <!-- IMAGE: change filename here if yours differs -->
+    <div class="hero-wrap">
+      <img id="hero"
+           src="porcupine.jpg?v=1"
+           alt="Ninja Porcupine"
+           onerror="this.onerror=null; this.src='IMG_0240.jpeg?v=1';" />
+    </div>
+  </main>
+
+  <!-- AUDIO: uses your exact filename -->
+  <audio id="bgm" preload="auto" loop muted playsinline>
+    <source src="Chaos!! [Stereo mix (WAV)].wav" type="audio/wav">
+  </audio>
+  <button id="soundToggle" class="btn-sound" aria-pressed="false" aria-live="polite">
+    🔊 Sound ON
+  </button>
 
   <script>
-  // ----- Scene basics -----
-  const scene   = new THREE.Scene();
-  const camera  = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
-  const renderer= new THREE.WebGLRenderer({ antialias:true, alpha:false });
-  renderer.setSize(innerWidth, innerHeight);
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  document.body.appendChild(renderer.domElement);
+    /* iOS-safe audio unlock */
+    (function(){
+      const audio = document.getElementById('bgm');
+      const btn   = document.getElementById('soundToggle');
+      if (!audio || !btn) return;
+      audio.volume = 0.9; audio.muted = true;
 
-  camera.position.set(0, 0.6, 7);
-
-  // Lighting
-  scene.add(new THREE.AmbientLight(0x8cc7ff, 0.6));
-  const key = new THREE.PointLight(0x77aaff, 1.2, 0, 2);
-  key.position.set(3, 3, 5);
-  scene.add(key);
-
-  // ----- Star field -----
-  (function makeStars(count=1200){
-    const geo = new THREE.BufferGeometry();
-    const pos = new Float32Array(count*3);
-    for (let i=0;i<count;i++){
-      const r = 60*Math.cbrt(Math.random());
-      const t = Math.random()*Math.PI*2;
-      const p = (Math.random()-0.5)*Math.PI;
-      pos[i*3+0] = r*Math.cos(t)*Math.cos(p);
-      pos[i*3+1] = r*Math.sin(p);
-      pos[i*3+2] = r*Math.sin(t)*Math.cos(p);
-    }
-    geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
-    const mat = new THREE.PointsMaterial({ color:0x77aaff, size:0.05 });
-    scene.add(new THREE.Points(geo, mat));
-  })();
-
-  // ----- Porcupine billboard (uses your porcupine.jpg in repo root) -----
-  const loader = new THREE.TextureLoader();
-  loader.load('porcupine.jpg', tex => {
-    tex.colorSpace = THREE.SRGBColorSpace;
-    const geo = new THREE.PlaneGeometry(3.2, 2.2);
-    const mat = new THREE.MeshStandardMaterial({
-      map: tex, transparent: false, roughness: 0.8, metalness: 0.0
-    });
-    const card = new THREE.Mesh(geo, mat);
-    card.position.set(0, 0.25, 0);
-    scene.add(card);
-
-    // Ninja idle motion
-    let t = 0, dashCooldown = 0;
-    function idle(dt){
-      t += dt;
-      card.rotation.y = Math.sin(t*0.9)*0.25;
-      card.rotation.x = Math.sin(t*0.5)*0.07;
-      card.position.y = 0.25 + Math.sin(t*1.7)*0.08;
-    }
-
-    function dash(){
-      if (dashCooldown>0) return;
-      dashCooldown = 1.6;
-      // Animate forward then snap back
-      const startZ = card.position.z;
-      const startS = card.scale.clone();
-      let dT = 0;
-      const doDash = (dt)=>{
-        dT += dt;
-        const u = Math.min(dT/0.6, 1);
-        // ease out
-        const e = 1 - Math.pow(1-u, 3);
-        card.position.z = THREE.MathUtils.lerp(startZ, -1.2, e);
-        card.scale.setScalar(THREE.MathUtils.lerp(startS.x, 1.35, e));
-        if (u<1) return;
-        // fly back
-        const back = (dt2)=>{
-          dT += dt2;
-          const u2 = Math.min((dT-0.6)/1.0, 1);
-          const e2 = Math.pow(1-u2, 2);
-          card.position.z = THREE.MathUtils.lerp(-1.2, startZ, 1-e2);
-          card.scale.setScalar(THREE.MathUtils.lerp(1.35, startS.x, 1-e2));
-          if (u2>=1) {
-            dashCooldown = 0;
-            ticker.splice(ticker.indexOf(back),1);
-          }
-        };
-        ticker.push(back);
-        ticker.splice(ticker.indexOf(doDash),1);
-      };
-      ticker.push(doDash);
-    }
-
-    // Click / tap to dash
-    addEventListener('pointerdown', dash);
-
-    // register idle updater
-    const update = (dt)=> idle(dt);
-    ticker.push(update);
-  }, undefined, err => {
-    console.warn('Could not load porcupine.jpg. Put the file in repo root.');
-  });
-
-  // ----- (Optional) Glowing text -----
-  try {
-    new THREE.FontLoader().load(
-      'https://unpkg.com/three@0.160.0/examples/fonts/helvetiker_regular.typeface.json',
-      font => {
-        const geo = new THREE.TextGeometry('CHAOS IS COMING', {
-          font, size: 0.45, height: 0.08, curveSegments: 6,
-        });
-        geo.center();
-        const mat = new THREE.MeshStandardMaterial({ color:0x66ccff, emissive:0x0a2a66, emissiveIntensity: 1.2 });
-        const mesh = new THREE.Mesh(geo, mat);
-        mesh.position.set(0, -1.1, 0);
-        scene.add(mesh);
-        ticker.push(dt => mesh.rotation.y += dt*0.25);
+      let unlocked = false;
+      async function enableSound(){
+        if (unlocked) return;
+        try{
+          audio.muted = false;
+          await audio.play();
+          unlocked = true;
+          btn.classList.add('hidden');
+          btn.setAttribute('aria-pressed','true');
+          remove();
+        }catch(e){ /* keep button visible if blocked */ }
       }
-    );
-  } catch(e){ /* optional */ }
+      function remove(){
+        ['click','touchstart','keydown'].forEach(ev =>
+          window.removeEventListener(ev, enableSound, ev==='touchstart'?{passive:true}:undefined)
+        );
+        btn.removeEventListener('click', enableSound);
+      }
+      btn.addEventListener('click', enableSound);
+      window.addEventListener('click', enableSound);
+      window.addEventListener('touchstart', enableSound, {passive:true});
+      window.addEventListener('keydown', enableSound);
+      document.addEventListener('visibilitychange', ()=>{
+        if (document.hidden) audio.pause(); else if (unlocked) audio.play().catch(()=>{});
+      });
+    })();
 
-  // ----- Ticker / render loop -----
-  const ticker = [];
-  let last = performance.now();
-  function frame(now){
-    const dt = Math.min((now-last)/1000, 0.033);
-    last = now;
-    for (const fn of ticker) fn(dt);
-    renderer.render(scene, camera);
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
+    /* Sierpinski background (lightweight) */
+    (function(){
+      const cvs = document.getElementById('bg');
+      const ctx = cvs.getContext('2d');
+      let w,h, t=0;
 
-  // Resize
-  addEventListener('resize', ()=> {
-    camera.aspect = innerWidth/innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
-  });
+      function onResize(){
+        w = cvs.width  = window.innerWidth;
+        h = cvs.height = window.innerHeight;
+      }
+      window.addEventListener('resize', onResize, {passive:true});
+      onResize();
+
+      function tri(p1,p2,p3,depth){
+        if (depth===0){
+          ctx.beginPath();
+          ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y); ctx.lineTo(p3.x,p3.y); ctx.closePath();
+          ctx.stroke();
+          return;
+        }
+        const m12 = {x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2};
+        const m23 = {x:(p2.x+p3.x)/2, y:(p2.y+p3.y)/2};
+        const m31 = {x:(p3.x+p1.x)/2, y:(p3.y+p1.y)/2};
+        tri(p1,m12,m31,depth-1);
+        tri(m12,p2,m23,depth-1);
+        tri(m31,m23,p3,depth-1);
+      }
+
+      function draw(){
+        t += 0.004; // slow pulse
+        ctx.clearRect(0,0,w,h);
+        ctx.shadowBlur = 12;
+        const glow = Math.floor(128 + 127*Math.sin(t*2));
+        ctx.strokeStyle = `rgba(57,255,20,${0.075 + 0.05*Math.sin(t)})`;
+        ctx.shadowColor = `rgba(57,255,20,0.6)`;
+        ctx.lineWidth = 1;
+
+        const size = Math.min(w,h)*0.7;
+        const cx = w/2, cy = h/2 + 40;
+        const p1 = {x: cx,           y: cy - size*Math.sqrt(3)/4};
+        const p2 = {x: cx - size/2,  y: cy + size*Math.sqrt(3)/4};
+        const p3 = {x: cx + size/2,  y: cy + size*Math.sqrt(3)/4};
+
+        tri(p1,p2,p3,5); // depth 5 is gentle on iPad
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
   </script>
 </body>
 </html>
